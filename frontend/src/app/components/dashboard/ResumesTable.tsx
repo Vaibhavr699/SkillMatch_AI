@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import StarIcon from '@mui/icons-material/Star';
 import DescriptionIcon from '@mui/icons-material/Description';
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
-import ClientDate from '../ClientDate';
 
 export default function ResumesTable({ resumes, onViewSuggestions }: { resumes: any[], onViewSuggestions: (resume: any) => void }) {
   return (
@@ -47,7 +46,7 @@ export default function ResumesTable({ resumes, onViewSuggestions }: { resumes: 
                     <span className="italic text-gray-400">N/A</span>
                   )}
                 </td>
-                <td className="px-4 py-2"><ClientDate date={resume.createdAt} /></td>
+                <td className="px-4 py-2">{new Date(resume.createdAt).toLocaleDateString()}</td>
                 <td className="px-4 py-2">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
@@ -72,7 +71,6 @@ import { motion } from "framer-motion";
 import StarIcon from '@mui/icons-material/Star';
 import DescriptionIcon from '@mui/icons-material/Description';
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
-import ClientDate from '../ClientDate';
 
 export default function ResumesTable({ resumes, onViewSuggestions }: { resumes: any[], onViewSuggestions: (resume: any) => void }) {
   return (
@@ -116,7 +114,7 @@ export default function ResumesTable({ resumes, onViewSuggestions }: { resumes: 
                     <span className="italic text-gray-400">N/A</span>
                   )}
                 </td>
-                <td className="px-4 py-2"><ClientDate date={resume.createdAt} /></td>
+                <td className="px-4 py-2">{new Date(resume.createdAt).toLocaleDateString()}</td>
                 <td className="px-4 py-2">
                   <motion.button
                     whileHover={{ scale: 1.05 }}

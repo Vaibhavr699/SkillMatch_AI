@@ -23,12 +23,8 @@ import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CountUp from 'react-countup';
-import ClientDate from '../components/ClientDate';
-import { useUser } from '@/hooks/useUser';
 
 export default function AdminDashboard() {
-  const { data: user, isLoading: userLoading } = useUser();
-  const router = useRouter();
   const [users, setUsers] = useState<any[]>([]);
   const [resumes, setResumes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,10 +34,20 @@ export default function AdminDashboard() {
   const [tokenChecked, setTokenChecked] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
   const [showFilters, setShowFilters] = useState(false);
+  const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [openSkillsDropdown, setOpenSkillsDropdown] = useState<number | null>(null);
   const skillsDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Auth check: redirect to login if not authenticated
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    if (!token) {
+      router.replace("/auth/login");
+      return;
+    }
+  }, [router]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -95,17 +101,6 @@ export default function AdminDashboard() {
     fetchData();
   }, []);
 
-  // Protect /admin route
-  useEffect(() => {
-    if (!userLoading && (!user || user.role !== 'ADMIN')) {
-      router.replace('/');
-    }
-  }, [user, userLoading, router]);
-
-  if (userLoading || !user || user.role !== 'ADMIN') {
-    return null;
-  }
-
   // After fetching users and resumes, filter out admin users for display
   const nonAdminUsers = Array.isArray(users) ? users.filter((user: any) => user.role !== 'admin') : [];
   // For resumes, only show those whose user is not admin
@@ -147,15 +142,9 @@ export default function AdminDashboard() {
 
   if (loading || !tokenChecked) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="text-center"
-        >
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-lg font-medium text-gray-600">Loading Dashboard...</p>
-        </motion.div>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 px-4">
+        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-6"></div>
+        <p className="text-lg font-medium text-gray-600 text-center max-w-xs">Loading Dashboard...</p>
       </div>
     );
   }
@@ -578,7 +567,7 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-600 flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            <ClientDate date={resume.createdAt} />
+                            {new Date(resume.createdAt).toLocaleDateString()}
                           </td>
                         </motion.tr>
                       ))}
