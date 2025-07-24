@@ -102,13 +102,6 @@ export default function DashboardPage() {
     }
   }, [user, userLoading, router]);
 
-  // Protect /dashboard route
-  useEffect(() => {
-    if (!userLoading && !user) {
-      router.replace('/');
-    }
-  }, [user, userLoading, router]);
-
   // Aggregate unique skills from all resumes' analysis
   const extractedSkills = Array.from(
     new Set(
